@@ -110,8 +110,14 @@ app.post('/api/CreateOrUpdateVehicleListing', async (req, res) => {
 
 
     async function makeRequest() {
-        const currentDate = new Date().toISOString();
-        const currentDateWithoutMilliseconds = currentDate.slice(0, 19) + 'Z';
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate beginnen bei 0 in JavaScript
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minute = String(now.getMinutes()).padStart(2, '0');
+        const second = String(now.getSeconds()).padStart(2, '0');
+        const currentDateWithoutMilliseconds = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
         const licensePlate = req.body.licensePlate;
         const email = req.body.email;
 
@@ -174,10 +180,10 @@ app.post('/api/CreateOrUpdateVehicleListing', async (req, res) => {
             try {
                 await Parking.create(dataToInsert);
                 console.log("Response data saved to MongoDB");
-            
+
             } catch (mongoError) {
                 console.error('An error occurred saving to MongoDB: ', mongoError);
-            
+
             }
 
         } catch (error) {
