@@ -3,6 +3,8 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 const cors = require('cors');
+const moment = require('moment-timezone');
+
 
 app.use(express.json());
 app.use(cors());
@@ -33,31 +35,33 @@ app.post('/api/ValidateListing', async (req, res) => {
     const hour = String(now.getHours()).padStart(2, '0');
     const minute = String(now.getMinutes()).padStart(2, '0');
     const second = String(now.getSeconds()).padStart(2, '0');
-    const currentDateWithoutMilliseconds = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+    let currentDateWithoutMilliseconds = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+    const berlinTime = moment().tz("Europe/Berlin").format('YYYY-MM-DDTHH:mm:ss[Z]');
+    currentDateWithoutMilliseconds = berlinTime;
 
-    const requestBody = 
-        {
-            "$type": "Parkon.Shared.Dto.VehicleListingDto, Parkon.Bridge",
-            "EmailToSendConfirmation": "",
-            "EstateId": "e1100e0e-97b1-4d30-85e3-5373ce2b7003",
-            "Notes": "",
-            "SelectetTimelimit": 2,
-            "Source": null,
-            "SourcePortalId": "057385c9-c569-40ea-86a8-d34a5e342f94",
-            "SourcePortalPublicTitle": null,
-            "Type": 0,
-            "ValidFrom": currentDateWithoutMilliseconds,
-            "ValidUntil": null,
-            "VehicleCanton": null,
-            "VehicleFullPlate": licensePlate,
-            "VehicleId": null,
-            "VehicleNumber": null,
-            "VehicleOwnerAddressCity": null,
-            "VehicleOwnerAddressStreet": null,
-            "VehicleOwnerAddressZip": null,
-            "VehicleOwnerName": null,
-            "Id": "00000000-0000-0000-0000-000000000000"
-        };
+    const requestBody =
+    {
+        "$type": "Parkon.Shared.Dto.VehicleListingDto, Parkon.Bridge",
+        "EmailToSendConfirmation": "",
+        "EstateId": "e1100e0e-97b1-4d30-85e3-5373ce2b7003",
+        "Notes": "",
+        "SelectetTimelimit": 2,
+        "Source": null,
+        "SourcePortalId": "057385c9-c569-40ea-86a8-d34a5e342f94",
+        "SourcePortalPublicTitle": null,
+        "Type": 0,
+        "ValidFrom": currentDateWithoutMilliseconds,
+        "ValidUntil": null,
+        "VehicleCanton": null,
+        "VehicleFullPlate": licensePlate,
+        "VehicleId": null,
+        "VehicleNumber": null,
+        "VehicleOwnerAddressCity": null,
+        "VehicleOwnerAddressStreet": null,
+        "VehicleOwnerAddressZip": null,
+        "VehicleOwnerName": null,
+        "Id": "00000000-0000-0000-0000-000000000000"
+    };
 
     try {
         const response = await axios({
