@@ -26,35 +26,44 @@ app.post('/api/ValidateListing', async (req, res) => {
     const intervalTime = 30000;
     const licensePlate = req.body.licensePlate;
     const email = req.body.email;
-    const currentDate = new Date().toISOString();
-    const currentDateWithoutMilliseconds = currentDate.slice(0, 19) + 'Z';
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate beginnen bei 0 in JavaScript
+    const day = String(now.getDate()).padStart(2, '0');
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const second = String(now.getSeconds()).padStart(2, '0');
+    const currentDateWithoutMilliseconds = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+
+    const requestBody = 
+        {
+            "$type": "Parkon.Shared.Dto.VehicleListingDto, Parkon.Bridge",
+            "EmailToSendConfirmation": "",
+            "EstateId": "e1100e0e-97b1-4d30-85e3-5373ce2b7003",
+            "Notes": "",
+            "SelectetTimelimit": 2,
+            "Source": null,
+            "SourcePortalId": "057385c9-c569-40ea-86a8-d34a5e342f94",
+            "SourcePortalPublicTitle": null,
+            "Type": 0,
+            "ValidFrom": currentDateWithoutMilliseconds,
+            "ValidUntil": null,
+            "VehicleCanton": null,
+            "VehicleFullPlate": licensePlate,
+            "VehicleId": null,
+            "VehicleNumber": null,
+            "VehicleOwnerAddressCity": null,
+            "VehicleOwnerAddressStreet": null,
+            "VehicleOwnerAddressZip": null,
+            "VehicleOwnerName": null,
+            "Id": "00000000-0000-0000-0000-000000000000"
+        };
 
     try {
         const response = await axios({
             method: 'post',
             url: 'https://app.parkon.ch/api/VehicleListing/ValidateListing',
-            data: {
-                "$type": "Parkon.Shared.Dto.VehicleListingDto, Parkon.Bridge",
-                "EmailToSendConfirmation": "",
-                "EstateId": "e1100e0e-97b1-4d30-85e3-5373ce2b7003",
-                "Notes": "",
-                "SelectetTimelimit": 2,
-                "Source": null,
-                "SourcePortalId": "057385c9-c569-40ea-86a8-d34a5e342f94",
-                "SourcePortalPublicTitle": null,
-                "Type": 0,
-                "ValidFrom": currentDateWithoutMilliseconds,
-                "ValidUntil": null,
-                "VehicleCanton": null,
-                "VehicleFullPlate": licensePlate,
-                "VehicleId": null,
-                "VehicleNumber": null,
-                "VehicleOwnerAddressCity": null,
-                "VehicleOwnerAddressStreet": null,
-                "VehicleOwnerAddressZip": null,
-                "VehicleOwnerName": null,
-                "Id": "00000000-0000-0000-0000-000000000000"
-            },
+            data: requestBody,
             headers: {
                 'authority': 'app.parkon.ch',
                 'accept': 'application/json, text/javascript, */*; q=0.01',
@@ -78,6 +87,7 @@ app.post('/api/ValidateListing', async (req, res) => {
         console.log(data);
         // Daten vorbereiten
         const dataToInsert = {
+            request: requestBody,
             response: response.data,
             timestamp: new Date()
         };
