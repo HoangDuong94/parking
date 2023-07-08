@@ -28,16 +28,8 @@ app.post('/api/ValidateListing', async (req, res) => {
     const intervalTime = 30000;
     const licensePlate = req.body.licensePlate;
     const email = req.body.email;
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate beginnen bei 0 in JavaScript
-    const day = String(now.getDate()).padStart(2, '0');
-    const hour = String(now.getHours()).padStart(2, '0');
-    const minute = String(now.getMinutes()).padStart(2, '0');
-    const second = String(now.getSeconds()).padStart(2, '0');
-    let currentDateWithoutMilliseconds = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
     const berlinTime = moment().tz("Europe/Berlin").format('YYYY-MM-DDTHH:mm:ss[Z]');
-    currentDateWithoutMilliseconds = berlinTime;
+    const currentDateWithoutMilliseconds = berlinTime;
 
     const requestBody =
     {
@@ -93,7 +85,7 @@ app.post('/api/ValidateListing', async (req, res) => {
         const dataToInsert = {
             request: requestBody,
             response: response.data,
-            timestamp: new Date()
+            timestamp: berlinTime
         };
 
         // Daten einfügen
@@ -124,14 +116,8 @@ app.post('/api/CreateOrUpdateVehicleListing', async (req, res) => {
 
 
     async function makeRequest() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate beginnen bei 0 in JavaScript
-        const day = String(now.getDate()).padStart(2, '0');
-        const hour = String(now.getHours()).padStart(2, '0');
-        const minute = String(now.getMinutes()).padStart(2, '0');
-        const second = String(now.getSeconds()).padStart(2, '0');
-        const currentDateWithoutMilliseconds = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+        const berlinTime = moment().tz("Europe/Berlin").format('YYYY-MM-DDTHH:mm:ss[Z]');
+        const currentDateWithoutMilliseconds = berlinTime;
         const licensePlate = req.body.licensePlate;
         const email = req.body.email;
 
@@ -184,11 +170,11 @@ app.post('/api/CreateOrUpdateVehicleListing', async (req, res) => {
             console.log(data);
 
             // Connection to MongoDB and saving data
-            const humanReadableTimestamp = new Date().toLocaleString();
+        
             const dataToInsert = {
                 request: requestBody,
                 response: data,
-                timestamp: humanReadableTimestamp
+                timestamp: currentDateWithoutMilliseconds
             };
 
             try {
