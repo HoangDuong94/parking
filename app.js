@@ -106,36 +106,37 @@ app.post('/api/ValidateListing', async (req, res) => {
 
 app.post('/api/CreateOrUpdateVehicleListing', async (req, res) => {
     const intervalTime = 18000000;
-    const currentDate = new Date().toISOString();
-    const currentDateWithoutMilliseconds = currentDate.slice(0, 19) + 'Z';
-    const licensePlate = req.body.licensePlate;
-    const email = req.body.email;
 
-    const requestBody = {
-        "$type": "Parkon.Shared.Dto.VehicleListingDto, Parkon.Bridge",
-        "EmailToSendConfirmation": email,
-        "EstateId": "e1100e0e-97b1-4d30-85e3-5373ce2b7003",
-        "Notes": "",
-        "SelectetTimelimit": 6,
-        "Source": null,
-        "SourcePortalId": "057385c9-c569-40ea-86a8-d34a5e342f94",
-        "SourcePortalPublicTitle": null,
-        "Type": 0,
-        "ValidFrom": currentDateWithoutMilliseconds,
-        "ValidUntil": null,
-        "VehicleCanton": null,
-        "VehicleFullPlate": licensePlate,
-        "VehicleId": null,
-        "VehicleNumber": null,
-        "VehicleOwnerAddressCity": null,
-        "VehicleOwnerAddressStreet": null,
-        "VehicleOwnerAddressZip": null,
-        "VehicleOwnerName": null,
-        "Id": "00000000-0000-0000-0000-000000000000"
-    };
 
 
     async function makeRequest() {
+        const currentDate = new Date().toISOString();
+        const currentDateWithoutMilliseconds = currentDate.slice(0, 19) + 'Z';
+        const licensePlate = req.body.licensePlate;
+        const email = req.body.email;
+
+        const requestBody = {
+            "$type": "Parkon.Shared.Dto.VehicleListingDto, Parkon.Bridge",
+            "EmailToSendConfirmation": email,
+            "EstateId": "e1100e0e-97b1-4d30-85e3-5373ce2b7003",
+            "Notes": "",
+            "SelectetTimelimit": 6,
+            "Source": null,
+            "SourcePortalId": "057385c9-c569-40ea-86a8-d34a5e342f94",
+            "SourcePortalPublicTitle": null,
+            "Type": 0,
+            "ValidFrom": currentDateWithoutMilliseconds,
+            "ValidUntil": null,
+            "VehicleCanton": null,
+            "VehicleFullPlate": licensePlate,
+            "VehicleId": null,
+            "VehicleNumber": null,
+            "VehicleOwnerAddressCity": null,
+            "VehicleOwnerAddressStreet": null,
+            "VehicleOwnerAddressZip": null,
+            "VehicleOwnerName": null,
+            "Id": "00000000-0000-0000-0000-000000000000"
+        };
         try {
             const response = await axios({
                 method: 'post',
@@ -173,10 +174,10 @@ app.post('/api/CreateOrUpdateVehicleListing', async (req, res) => {
             try {
                 await Parking.create(dataToInsert);
                 console.log("Response data saved to MongoDB");
-                res.send(email);
+            
             } catch (mongoError) {
                 console.error('An error occurred saving to MongoDB: ', mongoError);
-                res.send('Error saving to MongoDB');
+            
             }
 
         } catch (error) {
@@ -213,13 +214,13 @@ app.delete('/api/clearData', async (req, res) => {
 
 app.get('/api/readData', async (req, res) => {
     try {
-      const parkingData = await Parking.find({});
-      res.status(200).json(parkingData);
+        const parkingData = await Parking.find({});
+        res.status(200).json(parkingData);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
-  });
+});
 
 const port = process.env.POdsRT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
